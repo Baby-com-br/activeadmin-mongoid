@@ -1,7 +1,7 @@
 class ActiveAdmin::FilterFormBuilder
   def default_input_type(method, options = {})
-    if column = column_for(method)
-      case column.type.name.downcase.to_sym
+    if (column = column_for(method))
+      case column.type
       when :date, :datetime
         return :date_range
       when :string, :text
@@ -11,17 +11,20 @@ class ActiveAdmin::FilterFormBuilder
         return :numeric
       when :float, :decimal
         return :numeric
+      when :boolean
+        return :select
+      when :object
+        return :select
       end
-    else # dirty but allows to create filters for hashes
-      return :string
+    end
+
+    if reflection = reflection_for(method)
+      return :select if reflection.macro == :belongs_to && !reflection.options[:polymorphic]
     end
   end
 
-  def column_for(method)
-    @object.fields[method.to_s] if @object.respond_to?(:fields)
-  end
-
   def reflection_for(method)
-    @object.class.reflect_on_association(method) if @object.class.respond_to?(:reflect_on_association)
+    return @object.class.reflect_on_association(method) if @object.class.respond_to?(:reflect_on_association)
+    @object.base.reflect_on_association(method) if @object.base.respond_to?(:reflect_on_association)
   end
 end
