@@ -6,9 +6,13 @@ module ActiveAdmin
 
         def initialize(object, search_params = {})
           @base = object
-          @search_params = search_params
-          @query_hash = get_query_hash(search_params)
+          @search_params = search_params.reject {|k,v| @base.all.respond_to? k }
+          @query_hash = get_query_hash(@search_params)
           @query = @base.where(@query_hash)
+
+          search_params.each do |k,v|
+            @query = @query.send(k,v) if @query.respond_to? k
+          end
         end
 
         def respond_to?(method_id)
