@@ -16,8 +16,7 @@ module ActiveAdmin
         end
 
         def respond_to?(method_id)
-          return true if @base.send(:respond_to?, method_id)
-          @query.send(:respond_to?, method_id)
+          @base.send(:respond_to?, method_id)
         end
 
         def method_missing(method_id, *args, &block)
