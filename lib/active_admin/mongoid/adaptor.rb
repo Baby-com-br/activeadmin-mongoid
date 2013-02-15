@@ -16,7 +16,7 @@ module ActiveAdmin
         end
 
         def respond_to?(method_id)
-          @base.send(:respond_to?, method_id)
+          @base.klass.send(:respond_to?, method_id)
         end
 
         def method_missing(method_id, *args, &block)
