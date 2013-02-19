@@ -16,7 +16,11 @@ module ActiveAdmin
         end
 
         def respond_to?(method_id)
-          @base.klass.send(:respond_to?, method_id)
+          if @base.is_a? ::Mongoid::Criteria
+            @base.klass.send(:respond_to?, method_id)
+          else
+            @base.send(:respond_to?, method_id)
+          end
         end
 
         def method_missing(method_id, *args, &block)
