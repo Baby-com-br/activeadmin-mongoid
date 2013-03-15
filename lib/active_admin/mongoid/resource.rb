@@ -14,7 +14,7 @@ class ActiveAdmin::ResourceController
   def sort_order(chain)
     params[:order] ||= active_admin_config.sort_order
     if params[:order] && params[:order] =~ /^([\w\_\.]+)_(desc|asc)$/
-      return chain.send($2, $1) if chain.respond_to? :collection_name
+      return chain.order_by({$1 => $2}) if chain.respond_to? :order_by
 
       column = $1
       order  = $2
