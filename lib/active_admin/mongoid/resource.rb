@@ -13,11 +13,11 @@ class ActiveAdmin::ResourceController
   # Use #desc and #asc for sorting.
   def sort_order(chain)
     params[:order] ||= active_admin_config.sort_order
-    if params[:order] && params[:order] =~ /^([\w\_\.]+)_(desc|asc)$/
-      return chain.order_by({$1 => $2}) if chain.respond_to? :order_by
+    matches = params[:order].to_s.scan(/\A([\w\_\.]+)_(desc|asc)\z/)
+    if matches.any?
+      column, order = matches[0]
+      return chain.order_by({column => order}) if chain.respond_to? :order_by
 
-      column = $1
-      order  = $2
       table  = active_admin_config.resource_table_name
       table_column = (column =~ /\./) ? column :
         "#{table}.#{active_admin_config.resource_quoted_column_name(column)}"
