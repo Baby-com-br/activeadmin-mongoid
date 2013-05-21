@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'spec_helper'
 require 'active_admin/mongoid/adaptor'
 
@@ -28,6 +29,13 @@ describe ActiveAdmin::Mongoid::Adaptor::Search do
     context "and scrambled case" do
       let(:search_params) { { 'name_contains' => "SomeThing ToTaLLy" } }
       it { should == [product] }
+    end
+
+    context "and accents" do
+      let(:search_params) { { 'name_contains' => "Coracao" } }
+      let!(:accent_product) { Product.create(:name => "Coração de estudante") }
+
+      it { should == [accent_product] }
     end
   end
 
