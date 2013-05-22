@@ -1,3 +1,4 @@
+# encoding: utf-8
 module ActiveAdmin
   module Mongoid
     module Adaptor
@@ -46,12 +47,19 @@ module ActiveAdmin
 
         def mongoidify_search(k, v)
           if k =~ /_contains$/
-            [get_attribute(k), Regexp.new(Regexp.escape("#{v}"), Regexp::IGNORECASE)]
+            [get_attribute(k), Regexp.new(remove_accents(Regexp.escape("#{v}")), Regexp::IGNORECASE)]
           elsif k =~ /_eq$/
             [get_attribute(k), v]
           else
             [k, v]
           end
+        end
+
+        def remove_accents(regex)
+          %w([cç] [aàáâãä] [eèéêë] [iìíîï] [nñ] [oòóôõö] [uùúûü]).inject(regex) do |r, accent|
+            r.gsub(/#{accent}/, accent)
+          end
+
         end
 
         def get_attribute(k)
