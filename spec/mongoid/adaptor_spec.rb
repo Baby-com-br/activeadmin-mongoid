@@ -32,7 +32,7 @@ describe ActiveAdmin::Mongoid::Adaptor::Search do
     end
 
     context "and accents" do
-      let(:search_params) { { 'name_contains' => "Coracao" } }
+      let(:search_params) { { 'name_contains' => "Córacao" } }
       let!(:accent_product) { Product.create(:name => "Coração de estudante") }
 
       it { should == [accent_product] }
